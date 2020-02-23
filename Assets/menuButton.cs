@@ -60,4 +60,6 @@ public class menuButton : MonoBehaviour
         manager.GetComponent<SavingSystem>().setLangBool(k, h);
         SceneManager.LoadScene(1);
     }
+
+    
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class lang : MonoBehaviour
 {
@@ -23,9 +24,21 @@ public class lang : MonoBehaviour
 
     GameObject manager;
 
+    bool isMuted = false ;
+
+    GameObject MCam;
+
+    public Text Score;
+    int intScore;
+    
+
+
     // Start is called before the first frame update
     void Start()
     {
+        intScore = 0;
+        MCam = GameObject.FindGameObjectWithTag("MainCamera");
+        //audioListener = MCam.GetComponent<AudioListener>();
         gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
         audioC = Resources.LoadAll<AudioClip>(Application.dataPath + "/Audio");
         manager = GameObject.FindGameObjectWithTag("GameController");
@@ -97,11 +110,21 @@ public class lang : MonoBehaviour
     {
         if(guess == txtContentA[choice])
         {
-            previousChoice = choice;
+            if(isMuted == true)
+            {
+                intScore += 2;
+            }
+            else
+            {
+                 intScore++;
+            }
+           
+            
             GenerateNewLetter();
+            previousChoice = choice;
             return true;
         }
-
+        intScore = 0;
         return false;
     }
 
@@ -142,8 +165,30 @@ public class lang : MonoBehaviour
         
     }
 
+    public void BackButton()
+    {
+        
+        SceneManager.LoadScene(0);
+    
+    }
+
+    public void MuteButton()
+    {
+        if(isMuted == false)
+        {
+            
+            auds.volume = 0f;
+            isMuted = true;
+        }
+        else 
+        {
+            auds.volume = 1f;
+            isMuted = false;
+        }
+    }
+
     void Update()
     {   
-        
+       Score.text = intScore.ToString();
     }
 }
