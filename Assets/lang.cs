@@ -6,15 +6,11 @@ using System.IO;
 
 public class lang : MonoBehaviour
 {
-     string txtFileH;
-     string txtFileA;
-    string txtFileK;
+    
      string[] txtContentH;
      public string[] txtContentA;
     string[] txtContentK;
     public GameObject texts;
-    public Text uiT;
-    public Text ifd;
    public int choice;
     public AudioClip[] audioC;
     public AudioSource auds;
@@ -23,14 +19,18 @@ public class lang : MonoBehaviour
     public bool Hiragana;
 
     public GameObject[] gameButtons;
+
+    GameObject manager;
+
     // Start is called before the first frame update
     void Start()
     {
         gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
         audioC = Resources.LoadAll<AudioClip>(Application.dataPath + "/Audio");
+        manager = GameObject.FindGameObjectWithTag("GameController");
+        kata = manager.GetComponent<SavingSystem>().getKatakanaBool();
+        Hiragana = manager.GetComponent<SavingSystem>().getHiraganaBool();
         GenerateNewLetter();
-      
-        
         
     }
 
@@ -42,19 +42,31 @@ public class lang : MonoBehaviour
 
     void GenerateNewLetter()
     {
-        ifd.text = "";
-        txtFileH = Application.dataPath + "/Info/Hiragana.txt";
-        txtContentH = CreateDB(txtFileH);
+        
+        TextAsset tempA;
+        TextAsset tempK;
+        TextAsset tempH;
 
-        txtFileA = Application.dataPath + "/Info/HiraganaA.txt";
-        txtContentA = CreateDB(txtFileA);
+        tempH = Resources.Load("Info/Hiragana") as TextAsset;
+        tempA = Resources.Load("Info/HiraganaA") as TextAsset;
+        tempK = Resources.Load("Info/Katakana") as TextAsset;
+        
 
-        txtFileK = Application.dataPath + "/Info/Katakana.txt";
-        txtContentK = CreateDB(txtFileK);
+        txtContentH = CreateDB(tempH);
+        txtContentA = CreateDB(tempA);
+        txtContentK = CreateDB(tempK);
 
         choice = getRandomLetter();
 
-        GiveButtonsLetters();
+        if(kata == true)
+        {
+            GiveButtonsLetters(txtContentK);
+        }
+        else
+        {
+            GiveButtonsLetters(txtContentH);
+        }
+        
 
         playAudioEquiptment(choice);    
 
@@ -63,18 +75,12 @@ public class lang : MonoBehaviour
     public int GetCurrentNumber() { return choice; }
         
 
-    // Update is called once per frame
-    public string[] CreateDB(string dir)
+    
+    public string[] CreateDB(TextAsset dir)
     {
-        string temp;
         string[] storage;
 
-       
-
-        StreamReader reader = new StreamReader(dir);
-        temp = reader.ReadToEnd();
-        storage = temp.Split(',');
-        reader.Close();
+       storage = dir.text.Split(',');
 
         return storage;
     }
@@ -82,16 +88,8 @@ public class lang : MonoBehaviour
     public bool CheckGuess()
     {
         string currentA = txtContentA[choice];
-
-        if (ifd.text.ToUpper() == currentA)
-        {
-            return true;
-
-        }
-        else
-        {
-            return false;
-        }
+        return true;
+        
     }
 
     public void ButtonPress(string guess)
@@ -102,8 +100,10 @@ public class lang : MonoBehaviour
         }
     }
 
-    void GiveButtonsLetters()
+    void GiveButtonsLetters(string[] arrayChoice)
     {
+        texts.GetComponent<TextMesh>().text = arrayChoice[choice];
+
         for(int i = 0; i < gameButtons.Length; i++)
         {
             gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[getRandomLetter()]);
@@ -123,10 +123,7 @@ public class lang : MonoBehaviour
     }
 
     void Update()
-    {
-       
-
-
-        texts.GetComponent<TextMesh>().text = txtContentK[choice];
+    {   
+        
     }
 }

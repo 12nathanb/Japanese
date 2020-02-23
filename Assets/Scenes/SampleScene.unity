@@ -1103,10 +1103,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b44fa93d1a132ea48bff6608dc11c761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  txtFileH: 
   txtContentA: []
   texts: {fileID: 1218421577}
-  uiT: {fileID: 0}
-  ifd: {fileID: 992075279}
   choice: 0
   audioC: []
   auds: {fileID: 733806927}
@@ -1423,7 +1422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 3
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -1442,8 +1441,8 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 519420031}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PlaneDistance: 5
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
