@@ -24,7 +24,15 @@ public class ButtonController : MonoBehaviour
 
     public void buttonPress()
     {
-        card.GetComponent<lang>().ButtonPress(current);
+        if(card.GetComponent<lang>().ButtonPress(current) == true)
+        {
+
+        }
+        else if(card.GetComponent<lang>().ButtonPress(current) == false)
+        {
+            this.GetComponent<Button>().interactable = false;
+        }
+        
     }
 
     public void GetNewLetter(string i)

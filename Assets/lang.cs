@@ -12,6 +12,7 @@ public class lang : MonoBehaviour
     string[] txtContentK;
     public GameObject texts;
    public int choice;
+   int previousChoice;
     public AudioClip[] audioC;
     public AudioSource auds;
 
@@ -92,22 +93,37 @@ public class lang : MonoBehaviour
         
     }
 
-    public void ButtonPress(string guess)
+    public bool ButtonPress(string guess)
     {
         if(guess == txtContentA[choice])
         {
+            previousChoice = choice;
             GenerateNewLetter();
+            return true;
         }
+
+        return false;
     }
 
     void GiveButtonsLetters(string[] arrayChoice)
     {
         texts.GetComponent<TextMesh>().text = arrayChoice[choice];
-
+        int previousL = 100;
+        int lettertemp;
         for(int i = 0; i < gameButtons.Length; i++)
         {
-            gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[getRandomLetter()]);
-            Debug.Log(1);
+             gameButtons[i].GetComponent<Button>().interactable = true;
+
+            do{
+                lettertemp = getRandomLetter();
+                gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[lettertemp]);
+            } while(lettertemp == previousL || lettertemp == choice);
+            
+
+            previousL = lettertemp;
+
+
+
         }
 
         int tempNum;
@@ -119,7 +135,11 @@ public class lang : MonoBehaviour
 
     public int getRandomLetter()
     {
-        return Random.Range(0, txtContentH.Length);
+        do
+        {
+            return Random.Range(0, txtContentH.Length);
+        }while(choice == previousChoice);
+        
     }
 
     void Update()
