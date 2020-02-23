@@ -8,28 +8,35 @@ public class lang : MonoBehaviour
 {
      string txtFileH;
      string txtFileA;
+    string txtFileK;
      string[] txtContentH;
      public string[] txtContentA;
+    string[] txtContentK;
     public GameObject texts;
     public Text uiT;
     public Text ifd;
    public int choice;
     public AudioClip[] audioC;
     public AudioSource auds;
+
+    public bool kata;
+    public bool Hiragana;
+
+    public GameObject[] gameButtons;
     // Start is called before the first frame update
     void Start()
     {
+        gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
         audioC = Resources.LoadAll<AudioClip>(Application.dataPath + "/Audio");
         GenerateNewLetter();
-
+      
         
         
     }
 
     void playAudioEquiptment(int i)
     {
-        
-        auds.clip = Resources.Load<AudioClip>("Audio/" + i);
+        auds.clip = Resources.Load<AudioClip>("audio/" + i);
         auds.Play();
     }
 
@@ -42,9 +49,14 @@ public class lang : MonoBehaviour
         txtFileA = Application.dataPath + "/Info/HiraganaA.txt";
         txtContentA = CreateDB(txtFileA);
 
+        txtFileK = Application.dataPath + "/Info/Katakana.txt";
+        txtContentK = CreateDB(txtFileK);
+
         choice = getRandomLetter();
 
-        playAudioEquiptment(choice);
+        GiveButtonsLetters();
+
+        playAudioEquiptment(choice);    
 
     }
 
@@ -82,13 +94,28 @@ public class lang : MonoBehaviour
         }
     }
 
-    public void ButtonPress()
+    public void ButtonPress(string guess)
     {
-        if(CheckGuess() == true)
+        if(guess == txtContentA[choice])
         {
             GenerateNewLetter();
         }
     }
+
+    void GiveButtonsLetters()
+    {
+        for(int i = 0; i < gameButtons.Length; i++)
+        {
+            gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[getRandomLetter()]);
+            Debug.Log(1);
+        }
+
+        int tempNum;
+        tempNum = Random.Range(0, gameButtons.Length);
+        gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(txtContentA[choice]);
+
+    }
+    
 
     public int getRandomLetter()
     {
@@ -100,6 +127,6 @@ public class lang : MonoBehaviour
        
 
 
-        texts.GetComponent<TextMesh>().text = txtContentH[choice];
+        texts.GetComponent<TextMesh>().text = txtContentK[choice];
     }
 }
