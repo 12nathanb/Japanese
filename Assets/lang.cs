@@ -24,6 +24,9 @@ public class lang : MonoBehaviour
     public bool Hiragana;
     public bool kataExt;
     public bool HiraganaEXT;
+    bool easy;
+    bool medium;
+    bool hard;
     public GameObject[] gameButtons;
 
     GameObject manager;
@@ -50,6 +53,9 @@ public class lang : MonoBehaviour
         Hiragana = manager.GetComponent<SavingSystem>().getHiraganaBool();
         kataExt= manager.GetComponent<SavingSystem>().getKatakanaEXTBool();
         HiraganaEXT = manager.GetComponent<SavingSystem>().getHiraganaEXTBool();
+        easy  = manager.GetComponent<SavingSystem>().getDiffEasy();
+        medium  = manager.GetComponent<SavingSystem>().getDiffMedium();
+        hard  = manager.GetComponent<SavingSystem>().getDiffHard();
 
         if(kata == true || Hiragana == true)
         {
@@ -121,8 +127,11 @@ public class lang : MonoBehaviour
             GiveButtonsLetters(txtContentHE);
         }
         
-
-        playAudioEquiptment(choice);    
+        if(easy == true)
+        {
+            playAudioEquiptment(choice);
+        }
+            
 
     }
 
@@ -150,7 +159,7 @@ public class lang : MonoBehaviour
    {
        if(guess == txtContentA[choice])
         {
-            if(isMuted == true)
+            if(hard == true)
             {
                 intScore += 2;
             }
@@ -159,7 +168,12 @@ public class lang : MonoBehaviour
                  intScore++;
             }
            
-            
+            if(hard == true)
+            {
+            playAudioEquiptment(choice);
+            StartCoroutine(plsWait());
+            }
+
             GenerateNewLetter();
             previousChoice = choice;
             return true;
@@ -172,7 +186,7 @@ public class lang : MonoBehaviour
    {
        if(guess == txtContentExtA[choice])
         {
-            if(isMuted == true)
+            if(hard == true)
             {
                 intScore += 2;
             }
@@ -180,7 +194,12 @@ public class lang : MonoBehaviour
             {
                  intScore++;
             }
-           
+            if(hard == true)
+            {
+
+                playAudioEquiptment(choice);
+                StartCoroutine(plsWait());
+            }
             
             GenerateNewLetter();
             previousChoice = choice;
@@ -295,5 +314,10 @@ public class lang : MonoBehaviour
     void Update()
     {   
        Score.text = intScore.ToString();
+    }
+
+    IEnumerator plsWait()
+    {
+        yield return new WaitForSeconds(2);
     }
 }

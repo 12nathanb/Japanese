@@ -1372,7 +1372,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Hiragana Extra
+  m_Text: Hiragana Yoon
 --- !u!222 &1283186819
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2202,7 +2202,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Katakana Extra
+  m_Text: Katakana Yoon
 --- !u!222 &2095630572
 CanvasRenderer:
   m_ObjectHideFlags: 0

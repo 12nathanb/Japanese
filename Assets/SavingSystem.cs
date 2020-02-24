@@ -9,6 +9,10 @@ public class SavingSystem : MonoBehaviour
 
     public bool KatakanaEXT;
     public bool HiraganaEXT;
+
+    public bool easy;
+    public bool medium;
+    public bool hard;
     void Awake() {
         DontDestroyOnLoad(this.gameObject);
     }
@@ -24,6 +28,25 @@ public class SavingSystem : MonoBehaviour
         
     }
 
+    public void setEasy(bool e)
+    {
+        easy = e;
+    }
+
+    public void setMedium(bool m)
+    {
+        medium = m;
+    }
+
+
+    public void setHard(bool h)
+    {
+        hard = h;
+    }
+
+
+   
+
     public void setLangBool(bool k, bool h, bool ke, bool he)
     {
         Hiragana = h;
@@ -32,6 +55,10 @@ public class SavingSystem : MonoBehaviour
         HiraganaEXT = he;
     }
 
+    public bool getDiffEasy() { return easy;}
+    public bool getDiffMedium() { return medium;}
+
+    public bool getDiffHard() { return hard;}
     public bool getHiraganaBool() {return Hiragana;}
     public bool getKatakanaBool() {return Katakana;}
     public bool getKatakanaEXTBool() {return KatakanaEXT;}
