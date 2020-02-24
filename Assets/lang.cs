@@ -11,6 +11,9 @@ public class lang : MonoBehaviour
      string[] txtContentH;
      public string[] txtContentA;
     string[] txtContentK;
+    public string[] txtContentKE;
+    public string[] txtContentHE;
+    public string[] txtContentExtA;
     public GameObject texts;
    public int choice;
    int previousChoice;
@@ -19,7 +22,8 @@ public class lang : MonoBehaviour
 
     public bool kata;
     public bool Hiragana;
-
+    public bool kataExt;
+    public bool HiraganaEXT;
     public GameObject[] gameButtons;
 
     GameObject manager;
@@ -44,13 +48,33 @@ public class lang : MonoBehaviour
         manager = GameObject.FindGameObjectWithTag("GameController");
         kata = manager.GetComponent<SavingSystem>().getKatakanaBool();
         Hiragana = manager.GetComponent<SavingSystem>().getHiraganaBool();
+        kataExt= manager.GetComponent<SavingSystem>().getKatakanaEXTBool();
+        HiraganaEXT = manager.GetComponent<SavingSystem>().getHiraganaEXTBool();
+
+        if(kata == true || Hiragana == true)
+        {
+            texts.GetComponent<TextMesh>().characterSize = 1;
+        }
+        else
+        {
+            texts.GetComponent<TextMesh>().characterSize = 0.7f;
+        }
+
         GenerateNewLetter();
         
     }
 
     void playAudioEquiptment(int i)
     {
-        auds.clip = Resources.Load<AudioClip>("audio/" + i);
+        if(kata == true || Hiragana == true)
+        {
+            auds.clip = Resources.Load<AudioClip>("audio/" + i);
+        }
+        else
+        {
+            auds.clip = Resources.Load<AudioClip>("ExtAudio/Comb/" + i);
+        }
+        
         auds.Play();
     }
 
@@ -60,15 +84,23 @@ public class lang : MonoBehaviour
         TextAsset tempA;
         TextAsset tempK;
         TextAsset tempH;
+        TextAsset tempKE;
+        TextAsset ExtendedA;
+        TextAsset tempHE;
 
         tempH = Resources.Load("Info/Hiragana") as TextAsset;
         tempA = Resources.Load("Info/HiraganaA") as TextAsset;
         tempK = Resources.Load("Info/Katakana") as TextAsset;
-        
+        tempKE = Resources.Load("Info/KataKanaComb") as TextAsset;
+        tempHE = Resources.Load("Info/HiraganaComb") as TextAsset;
+        ExtendedA = Resources.Load("Info/CombA") as TextAsset;
 
         txtContentH = CreateDB(tempH);
         txtContentA = CreateDB(tempA);
         txtContentK = CreateDB(tempK);
+        txtContentKE = CreateDB(tempKE);
+        txtContentExtA = CreateDB(ExtendedA);
+        txtContentHE = CreateDB(tempHE);
 
         choice = getRandomLetter();
 
@@ -76,9 +108,17 @@ public class lang : MonoBehaviour
         {
             GiveButtonsLetters(txtContentK);
         }
-        else
+        else if(Hiragana == true)
         {
             GiveButtonsLetters(txtContentH);
+        }
+        else if(kataExt == true)
+        {
+            GiveButtonsLetters(txtContentKE);
+        }
+        else if(HiraganaEXT == true)
+        {
+            GiveButtonsLetters(txtContentHE);
         }
         
 
@@ -106,9 +146,9 @@ public class lang : MonoBehaviour
         
     }
 
-    public bool ButtonPress(string guess)
-    {
-        if(guess == txtContentA[choice])
+   bool CheckHiraAndKata(string guess)
+   {
+       if(guess == txtContentA[choice])
         {
             if(isMuted == true)
             {
@@ -126,6 +166,40 @@ public class lang : MonoBehaviour
         }
         intScore = 0;
         return false;
+   }
+
+   bool CheckHiraEXTAndKataEXT(string guess)
+   {
+       if(guess == txtContentExtA[choice])
+        {
+            if(isMuted == true)
+            {
+                intScore += 2;
+            }
+            else
+            {
+                 intScore++;
+            }
+           
+            
+            GenerateNewLetter();
+            previousChoice = choice;
+            return true;
+        }
+        intScore = 0;
+        return false;
+   }
+
+    public bool ButtonPress(string guess)
+    {
+        if(kata == true || Hiragana == true )
+        {
+           return CheckHiraAndKata(guess);
+        }
+        else
+        {
+            return CheckHiraEXTAndKataEXT(guess);
+        }
     }
 
     void GiveButtonsLetters(string[] arrayChoice)
@@ -139,7 +213,16 @@ public class lang : MonoBehaviour
 
             do{
                 lettertemp = getRandomLetter();
-                gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[lettertemp]);
+                if(kata == true || Hiragana == true )
+                {
+                    gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[lettertemp]);
+                }
+                else
+                {
+                    gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentExtA[lettertemp]);
+                }
+
+                
             } while(lettertemp == previousL || lettertemp == choice);
             
 
@@ -151,16 +234,38 @@ public class lang : MonoBehaviour
 
         int tempNum;
         tempNum = Random.Range(0, gameButtons.Length);
-        gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(txtContentA[choice]);
+
+        if(kata == true || Hiragana == true )
+        {
+            gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(txtContentA[choice]);
+        }
+        else
+        {
+            gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(txtContentExtA[choice]);
+        }
+        
 
     }
     
 
     public int getRandomLetter()
     {
+        int lengthTemp;
+
+        if(kata == true || Hiragana == true )
+        {
+            lengthTemp = txtContentH.Length;
+        }
+        else
+        {
+            lengthTemp = txtContentKE.Length;
+        }
+
+
+
         do
         {
-            return Random.Range(0, txtContentH.Length);
+            return Random.Range(0, lengthTemp);
         }while(choice == previousChoice);
         
     }
