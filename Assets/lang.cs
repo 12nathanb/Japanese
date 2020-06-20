@@ -4,16 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 public class lang : MonoBehaviour
 {
-    
-     string[] txtContentH;
-     public string[] txtContentA;
-    string[] txtContentK;
-    public string[] txtContentKE;
-    public string[] txtContentHE;
-    public string[] txtContentExtA;
+    public AudioSource _audio;
+
+     string[] Contents;
+     public string[] ContentsAnswers;
+    public int[] correctness;
     public GameObject texts;
    public int choice;
    int previousChoice;
@@ -24,19 +23,22 @@ public class lang : MonoBehaviour
     public bool Hiragana;
     public bool kataExt;
     public bool HiraganaEXT;
+
+    public bool vocab;
     bool easy;
     bool medium;
     bool hard;
     public GameObject[] gameButtons;
 
-    GameObject manager;
+    public GameObject manager;
+    GameObject BManger;
 
     bool isMuted = false ;
 
     GameObject MCam;
 
     public Text Score;
-    int intScore;
+    int intScore = 0;
     
 
 
@@ -45,9 +47,7 @@ public class lang : MonoBehaviour
     {
         intScore = 0;
         MCam = GameObject.FindGameObjectWithTag("MainCamera");
-        //audioListener = MCam.GetComponent<AudioListener>();
-        gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
-        audioC = Resources.LoadAll<AudioClip>(Application.dataPath + "/Audio");
+ 
         manager = GameObject.FindGameObjectWithTag("GameController");
         kata = manager.GetComponent<SavingSystem>().getKatakanaBool();
         Hiragana = manager.GetComponent<SavingSystem>().getHiraganaBool();
@@ -56,15 +56,35 @@ public class lang : MonoBehaviour
         easy  = manager.GetComponent<SavingSystem>().getDiffEasy();
         medium  = manager.GetComponent<SavingSystem>().getDiffMedium();
         hard  = manager.GetComponent<SavingSystem>().getDiffHard();
+        vocab = manager.GetComponent<SavingSystem>().getVocabBool();
+        BManger = GameObject.FindGameObjectWithTag("ButtonM");
 
         if(kata == true || Hiragana == true)
         {
+            BManger.GetComponent<buttonManager>().setSingle();
             texts.GetComponent<TextMesh>().characterSize = 1;
+            gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
+        }
+        else if(vocab == true)
+        {
+            BManger.GetComponent<buttonManager>().setVocab();
+            texts.GetComponent<TextMesh>().characterSize = 0.3f;
+            gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
+            for(int i = 0; i < gameButtons.Length; i++)
+            {
+                gameButtons[i].GetComponent<ButtonController>().setSize(70);
+            }
         }
         else
         {
+            BManger.GetComponent<buttonManager>().setSingle();
+            gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
             texts.GetComponent<TextMesh>().characterSize = 0.7f;
         }
+
+        
+
+        GenerateDB();
 
         GenerateNewLetter();
         
@@ -76,6 +96,12 @@ public class lang : MonoBehaviour
         {
             auds.clip = Resources.Load<AudioClip>("audio/" + i);
         }
+        else if(vocab == true)
+        {
+            Debug.Log ("PLAY");
+            
+            auds.clip = Resources.Load<AudioClip>("Vocab/Genki1/" + i);
+        }
         else
         {
             auds.clip = Resources.Load<AudioClip>("ExtAudio/Comb/" + i);
@@ -86,88 +112,83 @@ public class lang : MonoBehaviour
 
     void GenerateNewLetter()
     {
-        
-        TextAsset tempA;
-        TextAsset tempK;
-        TextAsset tempH;
-        TextAsset tempKE;
-        TextAsset ExtendedA;
-        TextAsset tempHE;
-
-        tempH = Resources.Load("Info/Hiragana") as TextAsset;
-        tempA = Resources.Load("Info/HiraganaA") as TextAsset;
-        tempK = Resources.Load("Info/Katakana") as TextAsset;
-        tempKE = Resources.Load("Info/KataKanaComb") as TextAsset;
-        tempHE = Resources.Load("Info/HiraganaComb") as TextAsset;
-        ExtendedA = Resources.Load("Info/CombA") as TextAsset;
-
-        txtContentH = CreateDB(tempH);
-        txtContentA = CreateDB(tempA);
-        txtContentK = CreateDB(tempK);
-        txtContentKE = CreateDB(tempKE);
-        txtContentExtA = CreateDB(ExtendedA);
-        txtContentHE = CreateDB(tempHE);
-
-        choice = getRandomLetter();
-
-        if(kata == true)
-        {
-            GiveButtonsLetters(txtContentK);
-        }
-        else if(Hiragana == true)
-        {
-            GiveButtonsLetters(txtContentH);
-        }
-        else if(kataExt == true)
-        {
-            GiveButtonsLetters(txtContentKE);
-        }
-        else if(HiraganaEXT == true)
-        {
-            GiveButtonsLetters(txtContentHE);
-        }
-        
-        if(easy == true)
+        choice = getRandomLetter(Contents);
+        GiveButtonsLetters(Contents);
+       
+        if(easy == true )
         {
             playAudioEquiptment(choice);
         }
+        else
+        {
             
-
+        }
     }
 
     public int GetCurrentNumber() { return choice; }
         
 
-    
+    void GenerateDB()
+    {
+
+        if(kata == true)
+        {
+            Contents = CreateDB(Resources.Load("Info/Katakana") as TextAsset);
+            ContentsAnswers = CreateDB(Resources.Load("Info/HiraganaA") as TextAsset);
+             Debug.Log("kata selected");
+        }
+        else if(Hiragana == true)
+        {
+            Contents = CreateDB(Resources.Load("Info/Hiragana") as TextAsset);
+            ContentsAnswers = CreateDB(Resources.Load("Info/HiraganaA") as TextAsset);
+            Debug.Log("hira selected");
+        }
+        else if(kataExt == true)
+        {
+              Contents = CreateDB(Resources.Load("Info/KataKanaComb") as TextAsset);
+              ContentsAnswers = CreateDB(Resources.Load("Info/CombA") as TextAsset);
+        }
+        else if(HiraganaEXT == true)
+        {
+            Contents = CreateDB(Resources.Load("Info/HiraganaComb") as TextAsset);
+            ContentsAnswers = CreateDB(Resources.Load("Info/CombA") as TextAsset);
+        }
+        else if(vocab == true)
+        {
+            Contents = CreateDB(Resources.Load("Info/GENKILESSON1") as TextAsset);
+            ContentsAnswers = CreateDB(Resources.Load("Info/GENKILESSON1A") as TextAsset);
+        }
+        else
+        {
+            Debug.Log("none selected");
+        }
+
+        correctness = new int[Contents.Length];
+    }
     public string[] CreateDB(TextAsset dir)
     {
         string[] storage;
 
-       storage = dir.text.Split(',');
+        storage = dir.text.Split(',');
 
         return storage;
     }
 
     public bool CheckGuess()
     {
-        string currentA = txtContentA[choice];
+        string currentA = ContentsAnswers[choice];
         return true;
         
     }
 
-   bool CheckHiraAndKata(string guess)
+   bool CheckGuess(string guess)
    {
-       if(guess == txtContentA[choice])
+       if(guess == ContentsAnswers[choice])
         {
-            if(hard == true)
-            {
-                intScore += 2;
-            }
-            else
-            {
-                 intScore++;
-            }
-           
+            
+            intScore++;
+            correctness[choice]++;
+            Debug.Log("increase score");
             if(hard == true)
             {
             playAudioEquiptment(choice);
@@ -178,47 +199,14 @@ public class lang : MonoBehaviour
             previousChoice = choice;
             return true;
         }
-        intScore = 0;
-        return false;
-   }
-
-   bool CheckHiraEXTAndKataEXT(string guess)
-   {
-       if(guess == txtContentExtA[choice])
-        {
-            if(hard == true)
-            {
-                intScore += 2;
-            }
-            else
-            {
-                 intScore++;
-            }
-            if(hard == true)
-            {
-
-                playAudioEquiptment(choice);
-                StartCoroutine(plsWait());
-            }
-            
-            GenerateNewLetter();
-            previousChoice = choice;
-            return true;
-        }
+        correctness[choice]--;
         intScore = 0;
         return false;
    }
 
     public bool ButtonPress(string guess)
     {
-        if(kata == true || Hiragana == true )
-        {
-           return CheckHiraAndKata(guess);
-        }
-        else
-        {
-            return CheckHiraEXTAndKataEXT(guess);
-        }
+        return CheckGuess(guess);
     }
 
     void GiveButtonsLetters(string[] arrayChoice)
@@ -226,81 +214,50 @@ public class lang : MonoBehaviour
         texts.GetComponent<TextMesh>().text = arrayChoice[choice];
         int previousL = 100;
         int lettertemp;
+
         for(int i = 0; i < gameButtons.Length; i++)
         {
              gameButtons[i].GetComponent<Button>().interactable = true;
 
             do{
-                lettertemp = getRandomLetter();
-                if(kata == true || Hiragana == true )
-                {
-                    gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentA[lettertemp]);
-                }
-                else
-                {
-                    gameButtons[i].GetComponent<ButtonController>().GetNewLetter(txtContentExtA[lettertemp]);
-                }
-
+                lettertemp = getRandomLetter(arrayChoice);
                 
+                gameButtons[i].GetComponent<ButtonController>().GetNewLetter(ContentsAnswers[lettertemp]);
+
             } while(lettertemp == previousL || lettertemp == choice);
             
-
             previousL = lettertemp;
-
-
-
         }
 
         int tempNum;
         tempNum = Random.Range(0, gameButtons.Length);
 
-        if(kata == true || Hiragana == true )
-        {
-            gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(txtContentA[choice]);
-        }
-        else
-        {
-            gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(txtContentExtA[choice]);
-        }
-        
-
+        gameButtons[tempNum].GetComponent<ButtonController>().GetNewLetter(ContentsAnswers[choice]);
     }
     
 
-    public int getRandomLetter()
+    public int getRandomLetter(string[] AlphabetType)
     {
         int lengthTemp;
 
-        if(kata == true || Hiragana == true )
-        {
-            lengthTemp = txtContentH.Length;
-        }
-        else
-        {
-            lengthTemp = txtContentKE.Length;
-        }
-
-
+        lengthTemp = AlphabetType.Length;
 
         do
         {
             return Random.Range(0, lengthTemp);
-        }while(choice == previousChoice);
-        
+        }while(choice == previousChoice);   
     }
 
     public void BackButton()
-    {
-        
+    { 
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<SavingSystem>().setScore(intScore);
         SceneManager.LoadScene(0);
-    
     }
 
     public void MuteButton()
     {
         if(isMuted == false)
-        {
-            
+        {   
             auds.volume = 0f;
             isMuted = true;
         }
@@ -320,4 +277,6 @@ public class lang : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
     }
+
+
 }

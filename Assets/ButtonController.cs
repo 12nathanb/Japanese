@@ -8,7 +8,9 @@ public class ButtonController : MonoBehaviour
     public string current;
     public Text cardText;
     public GameObject card;
+    
 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -38,5 +40,10 @@ public class ButtonController : MonoBehaviour
     public void GetNewLetter(string i)
     {
         current = i;
+    }
+
+    public void setSize(int i)
+    {
+        cardText.fontSize = i;
     }
 }

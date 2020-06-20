@@ -7,18 +7,29 @@ public class SavingSystem : MonoBehaviour
     public bool Hiragana;
     public bool Katakana;
 
+    public bool vocab;
     public bool KatakanaEXT;
     public bool HiraganaEXT;
 
     public bool easy;
     public bool medium;
     public bool hard;
+public GameObject temp ;
+
+    public int score;
     void Awake() {
         DontDestroyOnLoad(this.gameObject);
+
+        if (GameObject.FindGameObjectsWithTag("GameController").Length > 1)
+       {
+         Destroy(this.gameObject);
+       }
+        
     }
     // Start is called before the first frame update
     void Start()
     {
+       
         
     }
 
@@ -44,15 +55,19 @@ public class SavingSystem : MonoBehaviour
         hard = h;
     }
 
-
+    public void setScore(int i)
+    {
+        score += i;
+    }
    
 
-    public void setLangBool(bool k, bool h, bool ke, bool he)
+    public void setLangBool(bool k, bool h, bool ke, bool he, bool v)
     {
         Hiragana = h;
         Katakana = k;
         KatakanaEXT = ke;
         HiraganaEXT = he;
+        vocab = v;
     }
 
     public bool getDiffEasy() { return easy;}
@@ -63,5 +78,9 @@ public class SavingSystem : MonoBehaviour
     public bool getKatakanaBool() {return Katakana;}
     public bool getKatakanaEXTBool() {return KatakanaEXT;}
     public bool getHiraganaEXTBool() {return HiraganaEXT;}
+
+    public bool getVocabBool() {return vocab;}
+
+    
 
 }
