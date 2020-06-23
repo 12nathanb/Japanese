@@ -799,6 +799,8 @@ MonoBehaviour:
   easy: 0
   medium: 0
   hard: 0
+  random: 0
+  inOrder: 0
   temp: {fileID: 0}
   score: 0
 --- !u!1 &726150402
@@ -1582,7 +1584,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Hiragana Yoon
+  m_Text: "Hiragana y\u014Don"
 --- !u!222 &1283186819
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2645,7 +2647,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Katakana Yoon
+  m_Text: "Katakana y\u014Don"
 --- !u!222 &2095630572
 CanvasRenderer:
   m_ObjectHideFlags: 0

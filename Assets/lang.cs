@@ -4,66 +4,55 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
-using System.Text.RegularExpressions;
+using TMPro;
 
 public class lang : MonoBehaviour
 {
-    public AudioSource _audio;
-
+        
      string[] Contents;
      public string[] ContentsAnswers;
     public int[] correctness;
     public GameObject texts;
-   public int choice;
+   public int choice ;
    int previousChoice;
-    public AudioClip[] audioC;
     public AudioSource auds;
+    public GameObject[] test;
+    public bool kata, Hiragana, kataExt, HiraganaEXT,vocab, Brandom, inOrder;
+    
+    bool easy, hard;
 
-    public bool kata;
-    public bool Hiragana;
-    public bool kataExt;
-    public bool HiraganaEXT;
-
-    public bool vocab;
-    bool easy;
-    bool medium;
-    bool hard;
     public GameObject[] gameButtons;
 
     public GameObject manager;
     GameObject BManger;
 
     bool isMuted = false ;
-
-    GameObject MCam;
-
-    public Text Score;
-    int intScore = 0;
     
-
+    public GameObject pauseScreen;
 
     // Start is called before the first frame update
     void Start()
     {
-        intScore = 0;
-        MCam = GameObject.FindGameObjectWithTag("MainCamera");
- 
+
         manager = GameObject.FindGameObjectWithTag("GameController");
         kata = manager.GetComponent<SavingSystem>().getKatakanaBool();
         Hiragana = manager.GetComponent<SavingSystem>().getHiraganaBool();
         kataExt= manager.GetComponent<SavingSystem>().getKatakanaEXTBool();
         HiraganaEXT = manager.GetComponent<SavingSystem>().getHiraganaEXTBool();
         easy  = manager.GetComponent<SavingSystem>().getDiffEasy();
-        medium  = manager.GetComponent<SavingSystem>().getDiffMedium();
+
         hard  = manager.GetComponent<SavingSystem>().getDiffHard();
         vocab = manager.GetComponent<SavingSystem>().getVocabBool();
         BManger = GameObject.FindGameObjectWithTag("ButtonM");
 
+        Brandom = manager.GetComponent<SavingSystem>().getRan();
+         inOrder = manager.GetComponent<SavingSystem>().getIn();
         if(kata == true || Hiragana == true)
         {
             BManger.GetComponent<buttonManager>().setSingle();
             texts.GetComponent<TextMesh>().characterSize = 1;
             gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
+            test = GameObject.FindGameObjectsWithTag("res");
         }
         else if(vocab == true)
         {
@@ -82,13 +71,16 @@ public class lang : MonoBehaviour
             texts.GetComponent<TextMesh>().characterSize = 0.7f;
         }
 
-        
+        if (inOrder == true)
+        {
+            choice = 0;
+        }
 
         GenerateDB();
-
         GenerateNewLetter();
         
     }
+
 
     void playAudioEquiptment(int i)
     {
@@ -114,15 +106,12 @@ public class lang : MonoBehaviour
     {
         choice = getRandomLetter(Contents);
         GiveButtonsLetters(Contents);
-       
+      
         if(easy == true )
         {
             playAudioEquiptment(choice);
         }
-        else
-        {
-            
-        }
+        
     }
 
     public int GetCurrentNumber() { return choice; }
@@ -185,8 +174,6 @@ public class lang : MonoBehaviour
    {
        if(guess == ContentsAnswers[choice])
         {
-            
-            intScore++;
             correctness[choice]++;
             Debug.Log("increase score");
             if(hard == true)
@@ -195,12 +182,22 @@ public class lang : MonoBehaviour
             StartCoroutine(plsWait());
             }
 
+            
+            if(inOrder == true)
+            {
+               
+                choice++;
+            
+                
+            }
+
             GenerateNewLetter();
             previousChoice = choice;
+
+
             return true;
         }
         correctness[choice]--;
-        intScore = 0;
         return false;
    }
 
@@ -220,7 +217,7 @@ public class lang : MonoBehaviour
              gameButtons[i].GetComponent<Button>().interactable = true;
 
             do{
-                lettertemp = getRandomLetter(arrayChoice);
+                lettertemp = Random.Range(0, arrayChoice.Length);
                 
                 gameButtons[i].GetComponent<ButtonController>().GetNewLetter(ContentsAnswers[lettertemp]);
 
@@ -237,21 +234,45 @@ public class lang : MonoBehaviour
     
 
     public int getRandomLetter(string[] AlphabetType)
-    {
-        int lengthTemp;
+    {   
+        int index = 0;
 
-        lengthTemp = AlphabetType.Length;
-
-        do
+        if(Brandom ==true)
         {
-            return Random.Range(0, lengthTemp);
-        }while(choice == previousChoice);   
+            index = Random.Range(0, AlphabetType.Length);
+        }
+        else if(inOrder == true)
+        {
+            if(choice > Contents.Length)
+        {
+                    BackButton();
+        }
+        else{
+            index = choice;
+        }
+            
+      
+            Debug.Log("Up the choice");
+             Debug.Log(choice);
+        }
+        
+       
+        return index;
+        
     }
 
     public void BackButton()
     { 
-        GameObject.FindGameObjectWithTag("GameController").GetComponent<SavingSystem>().setScore(intScore);
         SceneManager.LoadScene(0);
+    }
+
+    public void PauseButton()
+    {
+        pauseScreen.SetActive(true); 
+    }
+    public void ClosePauseButton()
+    {
+        pauseScreen.SetActive(false);
     }
 
     public void MuteButton()
@@ -268,9 +289,9 @@ public class lang : MonoBehaviour
         }
     }
 
-    void Update()
-    {   
-       Score.text = intScore.ToString();
+    void Update() 
+    {
+        
     }
 
     IEnumerator plsWait()

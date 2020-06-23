@@ -14,6 +14,9 @@ public class SavingSystem : MonoBehaviour
     public bool easy;
     public bool medium;
     public bool hard;
+
+    public bool random;
+    public bool inOrder;
 public GameObject temp ;
 
     public int score;
@@ -55,6 +58,18 @@ public GameObject temp ;
         hard = h;
     }
 
+    public void setRandom(bool r)
+    {
+        random = r;
+        inOrder = !r;
+    }
+
+    public void setInOrder(bool i)
+    {
+        inOrder = i;
+        random = !i;
+    }
+
     public void setScore(int i)
     {
         score += i;
@@ -74,6 +89,10 @@ public GameObject temp ;
     public bool getDiffMedium() { return medium;}
 
     public bool getDiffHard() { return hard;}
+
+    public bool getRan() {return random;}
+
+    public bool getIn(){return inOrder;}
     public bool getHiraganaBool() {return Hiragana;}
     public bool getKatakanaBool() {return Katakana;}
     public bool getKatakanaEXTBool() {return KatakanaEXT;}

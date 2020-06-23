@@ -36,4 +36,16 @@ public class DifficultySelect : MonoBehaviour
         manager.GetComponent<SavingSystem>().setHard(true);
         SceneManager.LoadScene(2);
     }
+
+    public void random()
+    {
+        manager.GetComponent<SavingSystem>().setRandom(true);
+        SceneManager.LoadScene(3);
+    }
+
+    public void inOrder()
+    {
+        manager.GetComponent<SavingSystem>().setInOrder(true);
+        SceneManager.LoadScene(3);
+    }
 }

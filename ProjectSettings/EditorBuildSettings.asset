@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Diff.unity
     guid: 5c823848ea0aab949be5dea98a18f355
   - enabled: 1
+    path: Assets/Scenes/Ran.unity
+    guid: ef14c60dbbb55d6478b9c266fa65c6f3
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
