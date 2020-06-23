@@ -45,6 +45,7 @@ public GameObject temp ;
     public void setEasy(bool e)
     {
         easy = e;
+        hard = !e;
     }
 
     public void setMedium(bool m)
@@ -56,6 +57,7 @@ public GameObject temp ;
     public void setHard(bool h)
     {
         hard = h;
+        easy = !h;
     }
 
     public void setRandom(bool r)

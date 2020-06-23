@@ -81,22 +81,30 @@ public class lang : MonoBehaviour
         
     }
 
+    public void buttonAudio()
+    {
+        if(easy == true)
+        {
+            playAudioEquiptment(0);
+        }
+    }
+
 
     void playAudioEquiptment(int i)
     {
         if(kata == true || Hiragana == true)
         {
-            auds.clip = Resources.Load<AudioClip>("audio/" + i);
+            auds.clip = Resources.Load<AudioClip>("audio/" + choice);
         }
         else if(vocab == true)
         {
             Debug.Log ("PLAY");
             
-            auds.clip = Resources.Load<AudioClip>("Vocab/Genki1/" + i);
+            auds.clip = Resources.Load<AudioClip>("Vocab/Genki1/" + choice);
         }
         else
         {
-            auds.clip = Resources.Load<AudioClip>("ExtAudio/Comb/" + i);
+            auds.clip = Resources.Load<AudioClip>("ExtAudio/Comb/" + choice);
         }
         
         auds.Play();
