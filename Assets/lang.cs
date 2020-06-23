@@ -11,7 +11,6 @@ public class lang : MonoBehaviour
         
      string[] Contents;
      public string[] ContentsAnswers;
-    public int[] correctness;
     public GameObject texts;
    public int choice ;
    int previousChoice;
@@ -46,7 +45,9 @@ public class lang : MonoBehaviour
         BManger = GameObject.FindGameObjectWithTag("ButtonM");
 
         Brandom = manager.GetComponent<SavingSystem>().getRan();
-         inOrder = manager.GetComponent<SavingSystem>().getIn();
+        inOrder = manager.GetComponent<SavingSystem>().getIn();
+
+
         if(kata == true || Hiragana == true)
         {
             BManger.GetComponent<buttonManager>().setSingle();
@@ -85,12 +86,12 @@ public class lang : MonoBehaviour
     {
         if(easy == true)
         {
-            playAudioEquiptment(0);
+            playAudioEquiptment();
         }
     }
 
 
-    void playAudioEquiptment(int i)
+    void playAudioEquiptment()
     {
         if(kata == true || Hiragana == true)
         {
@@ -112,17 +113,26 @@ public class lang : MonoBehaviour
 
     void GenerateNewLetter()
     {
-        choice = getRandomLetter(Contents);
-        GiveButtonsLetters(Contents);
+         if(inOrder == true && choice < Contents.Length)
+        {
+            choice = getRandomLetter(Contents);
+            GiveButtonsLetters(Contents);
+        }
+
+        if(Brandom == true)
+        {
+            choice = getRandomLetter(Contents);
+            GiveButtonsLetters(Contents);
+        }
+        
       
         if(easy == true )
         {
-            playAudioEquiptment(choice);
+             StartCoroutine(plsWait());
+            playAudioEquiptment();
         }
         
     }
-
-    public int GetCurrentNumber() { return choice; }
         
 
     void GenerateDB()
@@ -159,9 +169,8 @@ public class lang : MonoBehaviour
         {
             Debug.Log("none selected");
         }
-
-        correctness = new int[Contents.Length];
     }
+    
     public string[] CreateDB(TextAsset dir)
     {
         string[] storage;
@@ -171,31 +180,30 @@ public class lang : MonoBehaviour
         return storage;
     }
 
-    public bool CheckGuess()
-    {
-        string currentA = ContentsAnswers[choice];
-        return true;
-        
-    }
-
    bool CheckGuess(string guess)
    {
        if(guess == ContentsAnswers[choice])
         {
-            correctness[choice]++;
             Debug.Log("increase score");
+
             if(hard == true)
             {
-            playAudioEquiptment(choice);
-            StartCoroutine(plsWait());
+                playAudioEquiptment();
+                StartCoroutine(plsWait());
             }
 
             
             if(inOrder == true)
             {
-               
-                choice++;
-            
+               if((choice < Contents.Length))
+               {
+                    choice++;
+               }
+               else
+               {
+                   BackButton();
+               }
+        
                 
             }
 
@@ -205,19 +213,19 @@ public class lang : MonoBehaviour
 
             return true;
         }
-        correctness[choice]--;
+
         return false;
    }
 
     public bool ButtonPress(string guess)
     {
+        
         return CheckGuess(guess);
     }
 
     void GiveButtonsLetters(string[] arrayChoice)
     {
         texts.GetComponent<TextMesh>().text = arrayChoice[choice];
-        int previousL = 100;
         int lettertemp;
 
         for(int i = 0; i < gameButtons.Length; i++)
@@ -229,9 +237,7 @@ public class lang : MonoBehaviour
                 
                 gameButtons[i].GetComponent<ButtonController>().GetNewLetter(ContentsAnswers[lettertemp]);
 
-            } while(lettertemp == previousL || lettertemp == choice);
-            
-            previousL = lettertemp;
+            } while(lettertemp == choice);
         }
 
         int tempNum;
@@ -249,22 +255,11 @@ public class lang : MonoBehaviour
         {
             index = Random.Range(0, AlphabetType.Length);
         }
-        else if(inOrder == true)
+        else
         {
-            if(choice > Contents.Length)
-        {
-                    BackButton();
-        }
-        else{
             index = choice;
         }
-            
-      
-            Debug.Log("Up the choice");
-             Debug.Log(choice);
-        }
-        
-       
+                 
         return index;
         
     }
@@ -297,15 +292,9 @@ public class lang : MonoBehaviour
         }
     }
 
-    void Update() 
-    {
-        
-    }
-
     IEnumerator plsWait()
     {
         yield return new WaitForSeconds(2);
     }
-
 
 }
