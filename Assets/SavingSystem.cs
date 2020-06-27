@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 public class SavingSystem : MonoBehaviour
 {
     public struct data
@@ -38,6 +40,49 @@ public GameObject temp ;
        }
         
     }
+
+    public static bool Save(string type, int[] scores)
+    {
+        BinaryFormatter formatter = GetBinaryFormatter();
+
+        string path = Application.persistentDataPath + "/saves/" + type + ".save";
+        FileStream file = new FileStream(path, FileMode.Create);
+
+        SaveData data = new SaveData(type, scores);
+        
+        formatter.Serialize(file, data);
+
+        file.Close();
+
+        return true;
+    } 
+
+    public static SaveData Load(string type)
+    {
+        string path2 = Application.persistentDataPath + "/saves/" + type + ".save";
+
+        if(File.Exists(path2))
+        {
+            BinaryFormatter formatter = GetBinaryFormatter();
+            FileStream stream = new FileStream(path2, FileMode.Open);
+
+            SaveData sData = formatter.Deserialize(stream) as SaveData;
+            stream.Close();
+            return sData;
+        }else
+        {
+            Debug.LogError("FILE NOT FOUND");
+            return null;
+        }
+    }
+
+    public static BinaryFormatter GetBinaryFormatter()
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        return formatter;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,6 +96,7 @@ public GameObject temp ;
         
     }
 
+    
     public void setEasy(bool e)
     {
         easy = e;
@@ -98,6 +144,11 @@ public GameObject temp ;
         }
     }
 
+    public void LoadArray(data[] a)
+    {
+        dataArray = a;
+    }
+
     public void setScoreArray(int choice, int scores)
     {
         dataArray[choice].score += scores;
@@ -115,6 +166,19 @@ public GameObject temp ;
 
     public string getStructType(int pos){return dataArray[pos].typeOfData;}
     public int getStructScore(int pos){return dataArray[pos].score;}
+    public int[] getStructData()
+    {
+        int[] temp;
+
+        temp = new int[dataArray.Length];
+        
+        for (int i = 0; i < dataArray.Length; i++)
+        {
+            temp[i] = dataArray[i].score;
+        }
+        
+        return temp;
+    }
     public bool getDiffEasy() { return easy;}
     public bool getDiffMedium() { return medium;}
 
@@ -132,5 +196,41 @@ public GameObject temp ;
     public bool getVocabBool() {return vocab;}
 
     
+
+}
+
+[System.Serializable]
+public class SaveData
+{
+    public int[] Hiradata;
+    public int[] katadata;
+    public int[] hedata;
+    public int[] kedata;
+
+    public int[] vocabdata;
+
+    public SaveData(string type, int[] savingData)
+    {
+        if(type == "Hiragana")
+        {
+            Hiradata = savingData;
+        }
+        if(type == "Katakana")
+        {
+            katadata = savingData;
+        }
+        if(type == "HiraganaE")
+        {
+            hedata = savingData;
+        }
+        if(type == "KatakanaE")
+        {
+            kedata = savingData;
+        }
+        if(type == "Vocab")
+        {
+            vocabdata = savingData;
+        }
+    }
 
 }

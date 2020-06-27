@@ -29,6 +29,8 @@ public class lang : MonoBehaviour
     
     public GameObject pauseScreen;
 
+    string gameType;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +49,32 @@ public class lang : MonoBehaviour
         Brandom = manager.GetComponent<SavingSystem>().getRan();
         inOrder = manager.GetComponent<SavingSystem>().getIn();
 
+        
+
+        if(kata == true)
+        {
+            gameType = "Katakana";
+            SaveData tempdata = SavingSystem.Load(gameType);
+
+        }
+        else if(Hiragana == true)
+        {
+            gameType = "Hiragana";
+        }
+        else if(HiraganaEXT == true)
+        {
+            gameType = "HiraganaE";
+        }
+        else if(kataExt == true)
+        {
+            gameType = "KatakanaE";
+        }
+        else if(vocab == true)
+        {
+            gameType = "Vocab";
+        }
+
+        
 
         if(kata == true || Hiragana == true)
         {
@@ -241,7 +269,8 @@ public class lang : MonoBehaviour
             BackButton();
             return false;
         }
-       
+
+        
     }
 
     void GiveButtonsLetters(string[] arrayChoice)
@@ -287,6 +316,8 @@ public class lang : MonoBehaviour
 
     public void BackButton()
     { 
+        //SavingSystem.Save(gameType, manager.GetComponent<SavingSystem>().getStructData());
+       
         SceneManager.LoadScene(0);
     }
 
@@ -296,6 +327,7 @@ public class lang : MonoBehaviour
     }
     public void ClosePauseButton()
     {
+        
         pauseScreen.SetActive(false);
     }
 
