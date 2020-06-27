@@ -9,7 +9,7 @@ using TMPro;
 public class lang : MonoBehaviour
 {
         
-     string[] Contents;
+    string[] Contents;
      public string[] ContentsAnswers;
     public GameObject texts;
    public int choice ;
@@ -217,10 +217,30 @@ public class lang : MonoBehaviour
         return false;
    }
 
+   bool checkArrayAmount()
+   {
+       if(choice < Contents.Length)
+       {
+           return true;
+       }
+       else
+       {
+           return false;
+       }
+   }
+
     public bool ButtonPress(string guess)
     {
-        
-        return CheckGuess(guess);
+        if (checkArrayAmount() == true)
+        {
+             return CheckGuess(guess);
+        }
+        else
+        {
+            BackButton();
+            return false;
+        }
+       
     }
 
     void GiveButtonsLetters(string[] arrayChoice)
