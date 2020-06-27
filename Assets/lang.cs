@@ -182,6 +182,8 @@ public class lang : MonoBehaviour
 
    bool CheckGuess(string guess)
    {
+       
+       
        if(guess == ContentsAnswers[choice])
         {
             Debug.Log("increase score");
@@ -195,15 +197,12 @@ public class lang : MonoBehaviour
             
             if(inOrder == true)
             {
-               if((choice < Contents.Length))
-               {
                     choice++;
-               }
-               else
-               {
-                   BackButton();
-               }
-        
+               
+                    if (checkArrayAmount() == false)
+                 {
+           BackButton();
+       }
                 
             }
 
