@@ -8,6 +8,8 @@ TagManager:
   - Card
   - ButtonM
   - res
+  - scorez
+  - ScoreText
   layers:
   - Default
   - TransparentFX

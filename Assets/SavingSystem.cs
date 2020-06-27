@@ -4,7 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 public class SavingSystem : MonoBehaviour
 {
+    public struct data
+    {
+        public string typeOfData;
+        public int score;
+    }
     public bool Hiragana;
+
+    public data[] dataArray;
     public bool Katakana;
 
     public bool vocab;
@@ -17,6 +24,8 @@ public class SavingSystem : MonoBehaviour
 
     public bool random;
     public bool inOrder;
+
+    public int arraySize;
 public GameObject temp ;
 
     public int score;
@@ -76,7 +85,24 @@ public GameObject temp ;
     {
         score += i;
     }
-   
+    
+    public void setSize(string[] i)
+    {
+        arraySize = i.Length;
+        dataArray = new data[i.Length];
+
+        for (int t = 0; t < i.Length; t++)
+        {
+            dataArray[t].typeOfData = i[t];
+            Debug.Log(dataArray[t].typeOfData);
+        }
+    }
+
+    public void setScoreArray(int choice, int scores)
+    {
+        dataArray[choice].score += scores;
+         Debug.Log(dataArray[choice].typeOfData + " " + dataArray[choice].score );
+    }
 
     public void setLangBool(bool k, bool h, bool ke, bool he, bool v)
     {
@@ -87,6 +113,8 @@ public GameObject temp ;
         vocab = v;
     }
 
+    public string getStructType(int pos){return dataArray[pos].typeOfData;}
+    public int getStructScore(int pos){return dataArray[pos].score;}
     public bool getDiffEasy() { return easy;}
     public bool getDiffMedium() { return medium;}
 
@@ -100,6 +128,7 @@ public GameObject temp ;
     public bool getKatakanaEXTBool() {return KatakanaEXT;}
     public bool getHiraganaEXTBool() {return HiraganaEXT;}
 
+    public int getArraySize() {return arraySize;}
     public bool getVocabBool() {return vocab;}
 
     

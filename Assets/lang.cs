@@ -99,7 +99,7 @@ public class lang : MonoBehaviour
         }
         else if(vocab == true)
         {
-            Debug.Log ("PLAY");
+           
             
             auds.clip = Resources.Load<AudioClip>("Vocab/Genki1/" + choice);
         }
@@ -142,13 +142,13 @@ public class lang : MonoBehaviour
         {
             Contents = CreateDB(Resources.Load("Info/Katakana") as TextAsset);
             ContentsAnswers = CreateDB(Resources.Load("Info/HiraganaA") as TextAsset);
-             Debug.Log("kata selected");
+           
         }
         else if(Hiragana == true)
         {
             Contents = CreateDB(Resources.Load("Info/Hiragana") as TextAsset);
             ContentsAnswers = CreateDB(Resources.Load("Info/HiraganaA") as TextAsset);
-            Debug.Log("hira selected");
+            
         }
         else if(kataExt == true)
         {
@@ -167,8 +167,10 @@ public class lang : MonoBehaviour
         }
         else
         {
-            Debug.Log("none selected");
+         
         }
+
+        manager.GetComponent<SavingSystem>().setSize(Contents);
     }
     
     public string[] CreateDB(TextAsset dir)
@@ -186,8 +188,8 @@ public class lang : MonoBehaviour
        
        if(guess == ContentsAnswers[choice])
         {
-            Debug.Log("increase score");
-
+       
+            manager.GetComponent<SavingSystem>().setScoreArray(choice, 1);
             if(hard == true)
             {
                 playAudioEquiptment();
@@ -208,11 +210,11 @@ public class lang : MonoBehaviour
 
             GenerateNewLetter();
             previousChoice = choice;
-
+            
 
             return true;
         }
-
+        manager.GetComponent<SavingSystem>().setScoreArray(choice, -1);
         return false;
    }
 
@@ -295,6 +297,11 @@ public class lang : MonoBehaviour
     public void ClosePauseButton()
     {
         pauseScreen.SetActive(false);
+    }
+
+    public void OpenScore()
+    {
+        SceneManager.LoadScene(4);
     }
 
     public void MuteButton()
