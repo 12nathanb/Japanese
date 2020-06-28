@@ -59,13 +59,9 @@ public class Scorefiller : MonoBehaviour
 
             size ++;
 
-            if(score[i] < -10)
-            {
-               objs[i].GetComponent<Image>().color = Color.red;
-            }
             if(score[i] < 0)
             {
-               objs[i].GetComponent<Image>().color = new Color(252f, 136f, 20f);
+               objs[i].GetComponent<Image>().color = Color.red;
             }
             if(score[i] == 0)
             {
@@ -90,13 +86,12 @@ public class Scorefiller : MonoBehaviour
         for(int r = size ; r < objs.Length; r++)
         {
             objs[r].SetActive(false);
-            Debug.Log("Done");
         }
 
         
     }
 
-      public void CloseScore()
+    public void CloseScore()
     {
         SceneManager.LoadScene(3);
     }

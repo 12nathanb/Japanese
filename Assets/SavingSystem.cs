@@ -31,13 +31,14 @@ public class SavingSystem : MonoBehaviour
 public GameObject temp ;
 
     public int score;
-    void Awake() {
-        DontDestroyOnLoad(this.gameObject);
+    void Awake() 
+    {
+        DontDestroyOnLoad(this.gameObject); //Makes it So this item is not destroyed when scene changes
 
         if (GameObject.FindGameObjectsWithTag("GameController").Length > 1)
-       {
-         Destroy(this.gameObject);
-       }
+        {
+            Destroy(this.gameObject); //this checks to see if there is already one and will delete the other
+        }
         
     }
 
@@ -82,20 +83,6 @@ public GameObject temp ;
 
         return formatter;
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-       
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     
     public void setEasy(bool e)
     {
