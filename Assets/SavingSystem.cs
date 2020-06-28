@@ -45,7 +45,7 @@ public GameObject temp ;
     {
         BinaryFormatter formatter = GetBinaryFormatter();
 
-        string path = Application.persistentDataPath + "/saves/" + type + ".save";
+        string path = Application.persistentDataPath + type + ".save";
         FileStream file = new FileStream(path, FileMode.Create);
 
         SaveData data = new SaveData(type, scores);
@@ -59,7 +59,7 @@ public GameObject temp ;
 
     public static SaveData Load(string type)
     {
-        string path2 = Application.persistentDataPath + "/saves/" + type + ".save";
+        string path2 = Application.persistentDataPath + type + ".save";
 
         if(File.Exists(path2))
         {
@@ -155,6 +155,51 @@ public GameObject temp ;
          Debug.Log(dataArray[choice].typeOfData + " " + dataArray[choice].score );
     }
 
+    public void loadArray(string type)
+    {
+        SaveData t = Load(type);
+
+        if(type == "Katakana")
+        {
+            for (int i = 0; i < t.katadata.Length; i++)
+            {
+                dataArray[i].score = t.katadata[i];
+            }
+
+        }
+        else if(type == "Hiragana")
+        {
+            for (int i = 0; i < t.Hiradata.Length; i++)
+            {
+                dataArray[i].score = t.Hiradata[i];
+            }
+        }
+        else if(type == "HiraganaE")
+        {
+            for (int i = 0; i < t.hedata.Length; i++)
+            {
+                dataArray[i].score = t.hedata[i];
+            }
+
+        }
+        else if(type == "KatakanaE")
+        {
+            for (int i = 0; i < t.kedata.Length; i++)
+            {
+                dataArray[i].score = t.kedata[i];
+            }
+
+        }
+        else if(type == "Vocab")
+        { 
+            for (int i = 0; i < t.vocabdata.Length; i++)
+            {
+                dataArray[i].score = t.vocabdata[i];
+            }
+        }
+        
+    }
+
     public void setLangBool(bool k, bool h, bool ke, bool he, bool v)
     {
         Hiragana = h;
@@ -231,6 +276,8 @@ public class SaveData
         {
             vocabdata = savingData;
         }
+
+        Debug.Log("SAVED");
     }
 
 }

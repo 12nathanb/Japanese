@@ -8,6 +8,9 @@ using UnityEngine;
 
 public class Scorefiller : MonoBehaviour
 {
+    public GameObject hirachart;
+    public GameObject yoonchart;
+    public GameObject vocabchart;
     public GameObject manager;
     public GameObject[] objs;
     public GameObject[] objsText;
@@ -19,9 +22,35 @@ public class Scorefiller : MonoBehaviour
     void Start()
     {
         manager = GameObject.FindGameObjectWithTag("GameController");
+
+        
+
+        if (manager.GetComponent<SavingSystem>().getKatakanaBool() == true ||manager.GetComponent<SavingSystem>().getHiraganaBool() == true) 
+        {
+            hirachart.SetActive(true);
+            yoonchart.SetActive(false);
+            vocabchart.SetActive(false);
+        }
+
+        if(manager.GetComponent<SavingSystem>().getHiraganaEXTBool() == true || manager.GetComponent<SavingSystem>().getKatakanaEXTBool() == true)
+        {
+            hirachart.SetActive(false);
+            yoonchart.SetActive(true);
+            vocabchart.SetActive(false);
+        }
+
+        if (manager.GetComponent<SavingSystem>().getVocabBool() == true)
+        {
+            hirachart.SetActive(false);
+            yoonchart.SetActive(false);
+            vocabchart.SetActive(true);
+        }
+
+
         objs = GameObject.FindGameObjectsWithTag("scorez");
         objsText = GameObject.FindGameObjectsWithTag("ScoreText");
         score = new int[objs.Length];
+
 
         for (int i = 0; i < manager.GetComponent<SavingSystem>().getArraySize(); i ++)
         {
@@ -30,9 +59,13 @@ public class Scorefiller : MonoBehaviour
 
             size ++;
 
-            if(score[i] < 0)
+            if(score[i] < -10)
             {
                objs[i].GetComponent<Image>().color = Color.red;
+            }
+            if(score[i] < 0)
+            {
+               objs[i].GetComponent<Image>().color = new Color(252f, 136f, 20f);
             }
             if(score[i] == 0)
             {
@@ -68,9 +101,4 @@ public class Scorefiller : MonoBehaviour
         SceneManager.LoadScene(3);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -55,7 +55,7 @@ public class lang : MonoBehaviour
         {
             gameType = "Katakana";
             SaveData tempdata = SavingSystem.Load(gameType);
-
+            
         }
         else if(Hiragana == true)
         {
@@ -90,7 +90,7 @@ public class lang : MonoBehaviour
             gameButtons = GameObject.FindGameObjectsWithTag("Buttons");
             for(int i = 0; i < gameButtons.Length; i++)
             {
-                gameButtons[i].GetComponent<ButtonController>().setSize(70);
+                gameButtons[i].GetComponent<ButtonController>().setSize(60);
             }
         }
         else
@@ -104,10 +104,10 @@ public class lang : MonoBehaviour
         {
             choice = 0;
         }
-
+       
         GenerateDB();
         GenerateNewLetter();
-        
+         manager.GetComponent<SavingSystem>().loadArray(gameType);
     }
 
     public void buttonAudio()
@@ -316,7 +316,8 @@ public class lang : MonoBehaviour
 
     public void BackButton()
     { 
-        //SavingSystem.Save(gameType, manager.GetComponent<SavingSystem>().getStructData());
+
+        
        
         SceneManager.LoadScene(0);
     }
@@ -333,6 +334,8 @@ public class lang : MonoBehaviour
 
     public void OpenScore()
     {
+         int[] tp = manager.GetComponent<SavingSystem>().getStructData();
+         SavingSystem.Save(gameType,tp);
         SceneManager.LoadScene(4);
     }
 
